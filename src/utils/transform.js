@@ -18,11 +18,11 @@ export default (obj, unit='K') => ({
     sunset: obj.sys.sunset,
   },
   sun: {
-    sunrise: obj.sys.sunrise,
-    sunset: obj.sys.sunset,
+    sunrise: obj.sys.sunrise*1000,
+    sunset: obj.sys.sunset*1000,
     isDaytime: ((date=(new Date()).valueOf()) =>
-      date > obj.sys.sunrise && obj.sys.sunset > date
-    )(1485743411)
+      date > obj.sys.sunrise*1000 && obj.sys.sunset*1000 > date
+    )()
   },
   wind: obj.wind,
   clouds: obj.clouds ? obj.clouds.all : null,
@@ -30,9 +30,9 @@ export default (obj, unit='K') => ({
   snow: obj.snow ? Math.min(Math.sqrt(obj.snow['3h'] / 3) * 14, 100) : null, // snow per 3h -> rain per 1h -> maximum of 100 because of percentage
   description: obj.weather[0].description,
   temp: {
-    current: Math.round(unit_transform(obj.main.temp, unit) * 100) / 100,
-    min: Math.round(unit_transform(obj.main.temp_min, unit) * 100) / 100,
-    max: Math.round(unit_transform(obj.main.temp_max, unit) * 100) / 100
+    current: Math.round(unit_transform(obj.main.temp, unit) * 10) / 10,
+    min: Math.round(unit_transform(obj.main.temp_min, unit) * 10) / 10,
+    max: Math.round(unit_transform(obj.main.temp_max, unit) * 10) / 10
   },
   pressure: obj.main.pressure,
   humidity: obj.main.humidity,

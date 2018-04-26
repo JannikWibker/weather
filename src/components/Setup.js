@@ -94,7 +94,7 @@ const Seperator = styled.div`
 const Button = styled.div`
   box-sizing: border-box;
   position: relative;
-  margin: 128px auto;
+  margin: 72px auto 36px auto;
   height: 48px;
   width: 192px;
   text-align: center;
@@ -113,6 +113,48 @@ const Headline = styled.h2`
   margin: 18px auto;
 `
 
+const UnitPickerWrapper = styled.div`
+  margin: 0 auto;
+  width: 144px;
+  height: 48px;
+
+  > div {
+    display: inline-block;
+    width: 48px;
+    height: 48px;
+    line-height: 48px;
+    text-align: center;
+  }
+
+  > div:nth-child(1) {
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    background-color: ${props => props.selected === 'C' ? 'white' : '#e9ecef'};
+    color: ${props => props.selected === 'C' ? '#46b7e0' : 'black'};
+  }
+
+  > div:nth-child(2) {
+    background-color: ${props => props.selected === 'F' ? 'white' : '#e9ecef'};
+    color: ${props => props.selected === 'F' ? '#46b7e0' : 'black'};
+  }
+
+  > div:nth-child(3) {
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    background-color: ${props => props.selected === 'K' ? 'white' : '#e9ecef'};
+    color: ${props => props.selected === 'K' ? '#46b7e0' : 'black'};
+  }
+
+`
+
+const UnitPicker = ({ unit, cb }) => (
+  <UnitPickerWrapper selected={unit}>
+    <div onClick={e => cb('C')}>C°</div>
+    <div onClick={e => cb('F')}>F°</div>
+    <div onClick={e => cb('K')}>K°</div>
+  </UnitPickerWrapper>
+)
+
 
 const Input = ({id, label, type='text', placeholder='', innerRef, initialValue='' }) => (
   <InputStyled>
@@ -128,27 +170,31 @@ export default class Setup extends Component {
   city_code_el
   city_name_el
 
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
 
     this.onDone = this.onDone.bind(this)
+
+    this.state = {
+      unit: this.props.initialValue.unit
+    }
   }
 
   onDone() {
-    console.log(this.city_code_el.value, this.city_name_el.value, this.props.initialValue.city_code, this.props.initialValue.city_name)
-    // this.props.onChange('UNIT', 'C' / 'F' / 'K')
+    console.log(this.city_code_el.value, this.city_name_el.value, this.props.initialValue.city_code, this.props.initialValue.city_name, this.state.unit)
+
     if(this.city_code_el.value !== this.props.initialValue.city_code) {
       console.log('city_code changed')
-      this.props.onChange('CITY_CODE', this.city_code_el.value, null)
+      this.props.onChange('CITY_CODE', this.city_code_el.value, this.state.unit)
     } else if(this.city_name_el.value !== this.props.initialValue.city_name) {
       console.log('city_name changed')
       backend.city(this.city_name_el.value)
         .then(({id, nm}) =>
-          this.props.onChange('CITY_NAME', id, nm)
+          this.props.onChange('CITY_NAME', id, nm, this.state.unit)
         )
     } else {
       console.log('nothing changed')
-      this.props.onChange('NOTHING', this.city_code_el.value, this.city_name_el.value)
+      this.props.onChange('NOTHING', this.city_code_el.value, this.city_name_el.value, this.state.unit)
     }
   }
 
@@ -160,6 +206,7 @@ export default class Setup extends Component {
         <Seperator>or</Seperator>
         <Input initialValue={this.props.initialValue.city_name} innerRef={el => this.city_name_el = el} id='city_name' label='City Name' type='text' placeholder='Cologne...' />
         <div><Headline>Unit</Headline></div>
+        <UnitPicker unit={this.state.unit} cb={x => this.setState({ unit: x })} />
 
         <Button
           tabIndex={0}

@@ -52,14 +52,12 @@ export default class App extends Component {
     })
   }
 
-  onCityUpdate(type, city_code, city_name) {
-    if(type === 'CITY_CODE' || type === 'CITY_NAME' || type === 'NOTHING') {
-      if(this.state.city_code !== city_code || this.state.city_name !== city_name) {
+  onCityUpdate(type, city_code, city_name, unit) {
+    if(type === 'CITY_CODE' || type === 'CITY_NAME' || type === 'UNIT' || type === 'NOTHING') {
+      if(this.state.city_code !== city_code || this.state.city_name !== city_name || this.state.unit !== unit) {
         console.log(city_code, city_name)
-        this.fetchData(city_code, city_name, this.state.unit)
+        this.fetchData(city_code, city_name, unit || this.state.unit)
       }
-    } else if(type === 'UNIT') {
-      console.log('unit changed: ', city_code)
     }
     this.onViewChange('weather')
   }
@@ -74,11 +72,13 @@ export default class App extends Component {
       .then(x => {
         localStorage.setItem('WEATHER_city_code', x.location.city_code)
         localStorage.setItem('WEATHER_city_name', city_name || x.location.city_name)
+        localStorage.setItem('WEATHER_unit', unit || 'C')
         this.setState({
         response: x,
         done: true,
         city_code: x.location.city_code,
         city_name: city_name || x.location.city_name,
+        unit: unit || 'C'
       }, x => console.log(this.state))
     })
   }
@@ -105,7 +105,7 @@ export default class App extends Component {
               : <Loading><span>Loading</span></Loading>
           ) : (
             <Setup
-              initialValue={{city_name: this.state.city_name || null, city_code: this.state.city_code || null}}
+              initialValue={{ city_name: this.state.city_name || null, city_code: this.state.city_code || null, unit: this.state.unit || 'C' }}
               onChange={this.onCityUpdate}
             />
           )
