@@ -4,9 +4,10 @@ This is a small simple weather app I made using the [OpenWeatherMap](https://ope
 
 ## Screenshots
 
-![weather in Münster](screenshots/weather-münster.png)
-![weather in New York City](screenshots/weather-new-york-city.png)
-![weather in Shenzhen](screenshots/weather-shenzhen.png)
+
+<img alt="weather in Münster" src="screenshots/weather-münster.png" height="400px" />
+<img alt="weather in New York City" src="screenshots/weather-new-york-city.png" height="400px" />
+<img alt="weather in Shenzhen" src="screenshots/weather-shenzhen.png" height="400px" />
 
 ## Available Scripts
 
